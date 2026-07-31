@@ -9,8 +9,17 @@ from src.logger import logging
 
 @dataclass
 class DataIngestionConfig:
-    train_data_path: str = os.path.join("artifacts", "train.csv")
-    test_data_path: str = os.path.join("artifacts", "test.csv")
+
+    train_data_path: str = os.path.join(
+        "artifacts",
+        "train.csv"
+    )
+
+    test_data_path: str = os.path.join(
+        "artifacts",
+        "test.csv"
+    )
+
     raw_data_path: str = os.path.join(
         "data",
         "raw",
@@ -21,6 +30,7 @@ class DataIngestionConfig:
 class DataIngestion:
 
     def __init__(self):
+
         self.ingestion_config = DataIngestionConfig()
 
     def initiate_data_ingestion(self):
@@ -30,11 +40,15 @@ class DataIngestion:
         os.makedirs("artifacts", exist_ok=True)
 
         logging.info("Reading the raw dataset.")
-        df = pd.read_csv(self.ingestion_config.raw_data_path)
+
+        df = pd.read_csv(
+            self.ingestion_config.raw_data_path
+        )
 
         logging.info("Dataset read successfully.")
 
         logging.info("Splitting the dataset into train and test sets.")
+
         train_set, test_set = train_test_split(
             df,
             test_size=0.2,
@@ -59,7 +73,19 @@ class DataIngestion:
 
         logging.info("Data ingestion completed successfully.")
 
+        return (
+            self.ingestion_config.train_data_path,
+            self.ingestion_config.test_data_path
+        )
+
 
 if __name__ == "__main__":
+
     obj = DataIngestion()
-    obj.initiate_data_ingestion()
+
+    train_path, test_path = (
+        obj.initiate_data_ingestion()
+    )
+
+    print("Train Path:", train_path)
+    print("Test Path :", test_path)

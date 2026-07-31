@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Loan Prediction System</title>
+</head>
+
+<body>
+
+    <h1 style="text-align:center;">
+        Loan Prediction System
+    </h1>
+
+    <p style="text-align:center;">
+        Enter the applicant information below.
+    </p>
+
+    <hr>
+
+    <form action="/predict" method="POST">
+
+        <label>Gender</label><br>
+        <select name="Gender">
+            <option>Male</option>
+            <option>Female</option>
+        </select>
+
+        <br><br>
+
+        <label>Married</label><br>
+        <select name="Married">
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+
+        <br><br>
+
+        <label>Dependents</label><br>
+        <select name="Dependents">
+            <option>0</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3+</option>
+        </select>
+
+        <br><br>
+
+        <label>Education</label><br>
+        <select name="Education">
+            <option>Graduate</option>
+            <option>Not Graduate</option>
+        </select>
+
+        <br><br>
+
+        <label>Self Employed</label><br>
+        <select name="Self_Employed">
+            <option>Yes</option>
+            <option>No</option>
+        </select>
+
+        <br><br>
+
+        <label>Applicant Income</label><br>
+        <input type="number" name="ApplicantIncome" required>
+
+        <br><br>
+
+        <label>Coapplicant Income</label><br>
+        <input type="number" name="CoapplicantIncome" required>
+
+        <br><br>
+
+        <label>Loan Amount</label><br>
+        <input type="number" name="LoanAmount" required>
+
+        <br><br>
+
+        <label>Loan Amount Term</label><br>
+        <input type="number" name="Loan_Amount_Term" required>
+
+        <br><br>
+
+        <label>Credit History</label><br>
+        <select name="Credit_History">
+            <option value="1">Good (1)</option>
+            <option value="0">Bad (0)</option>
+        </select>
+
+        <br><br>
+
+        <label>Property Area</label><br>
+        <select name="Property_Area">
+            <option>Urban</option>
+            <option>Semiurban</option>
+            <option>Rural</option>
+        </select>
+
+        <br><br>
+
+        <button type="submit">
+            Predict
+        </button>
+
+    </form>
+
+    <br><br>
+
+    {% if prediction == "Y" %}
+        <h2 style="color:green; text-align:center;">
+            ✅ Loan Approved
+        </h2>
+    {% endif %}
+
+    {% if prediction == "N" %}
+        <h2 style="color:red; text-align:center;">
+            ❌ Loan Rejected
+        </h2>
+    {% endif %}
+
+</body>
+
+</html>

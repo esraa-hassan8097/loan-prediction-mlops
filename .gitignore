@@ -34,6 +34,8 @@ Thumbs.db
 # Data
 data/raw/
 data/processed/
+mlflow.db
+mlruns/
 
 # Pytest
 .pytest_cache/
