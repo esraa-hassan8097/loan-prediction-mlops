@@ -1,0 +1,228 @@
+# ============================================================
+# GitHub Actions Workflow
+#
+# A workflow is an automation that GitHub executes whenever
+# a specific event occurs.
+#
+# In our case:
+# Whenever code is pushed to the main branch,
+# GitHub will automatically build and validate the project.
+# ============================================================
+
+# ------------------------------------------------------------
+# Workflow Name
+# This is only displayed in the GitHub Actions tab.
+# ------------------------------------------------------------
+name: Loan Prediction CI
+
+
+# ------------------------------------------------------------
+# Trigger
+#
+# Defines WHEN this workflow should start.
+#
+# Current trigger:
+# Every push to the "main" branch.
+#
+# Other possible triggers:
+# - pull_request
+# - workflow_dispatch (manual)
+# - schedule (cron jobs)
+# - release
+# ------------------------------------------------------------
+on:
+  push:
+    branches:
+      - main
+
+
+# ------------------------------------------------------------
+# Jobs
+#
+# A workflow can contain multiple jobs.
+#
+# Example:
+#
+# jobs:
+#   test:
+#   build:
+#   deploy:
+#
+# Our workflow currently has only one job called "build".
+# ------------------------------------------------------------
+jobs:
+
+  build:
+
+    # --------------------------------------------------------
+    # Runner
+    #
+    # GitHub creates a BRAND NEW virtual machine
+    # every time this workflow starts.
+    #
+    # This VM is temporary (ephemeral).
+    #
+    # After the workflow finishes,
+    # GitHub deletes the machine.
+    #
+    # Therefore every workflow starts
+    # from a completely clean environment.
+    # --------------------------------------------------------
+    runs-on: ubuntu-latest
+
+
+    # --------------------------------------------------------
+    # Steps
+    #
+    # A job consists of multiple steps.
+    #
+    # Think of them like a shell script.
+    #
+    # Step 1
+    # Step 2
+    # Step 3
+    # ...
+    # --------------------------------------------------------
+    steps:
+
+      # ======================================================
+      # STEP 1
+      #
+      # Download your GitHub repository
+      # onto the Ubuntu runner.
+      #
+      # Before checkout:
+      #
+      # Ubuntu VM
+      # └── Empty
+      #
+      # After checkout:
+      #
+      # Ubuntu VM
+      # ├── app.py
+      # ├── Dockerfile
+      # ├── requirements.txt
+      # ├── src/
+      # └── ...
+      #
+      # "uses" means:
+      # Execute a pre-built GitHub Action.
+      #
+      # actions/checkout is maintained by GitHub.
+      # ======================================================
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+
+      # ======================================================
+      # STEP 2
+      #
+      # Install Python.
+      #
+      # The runner is a fresh machine,
+      # therefore we explicitly install
+      # the Python version our project needs.
+      #
+      # "with" passes configuration
+      # to the GitHub Action.
+      #
+      # Similar to:
+      #
+      # setup_python(version="3.12")
+      # ======================================================
+      - name: Setup Python
+
+        uses: actions/setup-python@v5
+
+        with:
+          python-version: "3.12"
+
+
+      # ======================================================
+      # STEP 3
+      #
+      # Install project dependencies.
+      #
+      # At this point the runner has:
+      #
+      # ✓ Ubuntu
+      # ✓ Python
+      #
+      # But it still doesn't know what
+      # Flask
+      # Pandas
+      # MLflow
+      # Scikit-learn
+      #
+      # are.
+      #
+      # Therefore we install everything
+      # from requirements.txt.
+      #
+      # "run" means:
+      # Execute shell commands.
+      #
+      # "|" means:
+      # Treat the following lines
+      # as one shell script.
+      # ======================================================
+      - name: Install Dependencies
+
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+
+      # ======================================================
+      # STEP 4
+      #
+      # Verify Python installation.
+      #
+      # This is mainly for learning and debugging.
+      #
+      # It prints the Python version
+      # in the GitHub Actions logs.
+      #
+      # Later we can remove this step.
+      # ======================================================
+      - name: Verify Python
+
+        run: |
+          python --version
+
+
+      # ======================================================
+      # STEP 5
+      #
+      # Build the Docker image.
+      #
+      # This verifies that:
+      #
+      # ✓ Dockerfile exists
+      # ✓ Dockerfile syntax is correct
+      # ✓ requirements install successfully
+      # ✓ Image can be built
+      #
+      # If the Docker build fails,
+      # the workflow immediately stops.
+      # ======================================================
+      - name: Build Docker Image
+
+        run: |
+          docker build -t loan-prediction .
+
+
+      # ======================================================
+      # FUTURE STEPS
+      #
+      # We will add these gradually:
+      #
+      # - Run Unit Tests
+      # - Run Integration Tests
+      # - Lint Code
+      # - Train Model
+      # - Upload Artifacts
+      # - Login to Docker Hub
+      # - Push Docker Image
+      # - Deploy to Kubernetes
+      # ======================================================
