@@ -48,3 +48,8 @@ htmlcov/
 build/
 dist/
 *.egg-info/
+logs/
+
+# Backup files
+*.backup
+*.save

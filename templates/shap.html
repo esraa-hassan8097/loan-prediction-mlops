@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SHAP Explainability | LoanPredict AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #172554;
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 29px;
+            margin-bottom: 7px;
+        }
+
+        .header p {
+            color: #dbeafe;
+            font-size: 14px;
+        }
+
+        .nav {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .nav a {
+            text-decoration: none;
+            color: #374151;
+            margin: 0 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .nav a:hover {
+            color: #2563eb;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.07);
+        }
+
+        .title {
+            color: #172554;
+            font-size: 21px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 7px;
+        }
+
+        .field input,
+        .field select {
+            padding: 11px 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 9px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.10);
+        }
+
+        .button-area {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        button {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 13px 32px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .prediction {
+            text-align: center;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .approved {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #047857;
+        }
+
+        .rejected {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+
+        .prediction h2 {
+            margin-bottom: 7px;
+        }
+
+        .prediction p {
+            font-size: 14px;
+        }
+
+        .explanation-intro {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        .feature {
+            margin-bottom: 22px;
+        }
+
+        .feature-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 7px;
+        }
+
+        .feature-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .value {
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        .positive {
+            color: #059669;
+        }
+
+        .negative {
+            color: #dc2626;
+        }
+
+        .bar-background {
+            width: 100%;
+            height: 12px;
+            background: #e5e7eb;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .bar-positive {
+            background: #10b981;
+        }
+
+        .bar-negative {
+            background: #ef4444;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 28px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .legend span {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .green {
+            background: #10b981;
+        }
+
+        .red {
+            background: #ef4444;
+        }
+
+        .info {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 12px;
+            padding: 16px;
+            color: #1e40af;
+            font-size: 13px;
+            line-height: 1.6;
+            margin-top: 25px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #6b7280;
+            padding: 25px;
+        }
+
+        @media (max-width: 700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .nav a {
+                margin: 0 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="header">
+        <h1>LoanPredict AI</h1>
+        <p>Explainable AI — SHAP Model Analysis</p>
+    </header>
+
+    <nav class="nav">
+        <a href="/">Prediction</a>
+        <a href="/shap">SHAP</a>
+        <a href="/dashboard">Monitoring</a>
+    </nav>
+
+    <main class="container">
+
+        <!-- Applicant Form -->
+
+        <section class="card">
+
+            <h2 class="title">
+                🔍 Model Explainability
+            </h2>
+
+            <p class="subtitle">
+                Enter an applicant to see which features contributed most to the model prediction.
+            </p>
+
+            <form action="/shap" method="POST">
+
+                <div class="form-grid">
+
+                    <div class="field">
+                        <label>Gender</label>
+                        <select name="Gender">
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Married</label>
+                        <select name="Married">
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Dependents</label>
+                        <select name="Dependents">
+                            <option>0</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3+</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Education</label>
+                        <select name="Education">
+                            <option>Graduate</option>
+                            <option>Not Graduate</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Self Employed</label>
+                        <select name="Self_Employed">
+                            <option>No</option>
+                            <option>Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Property Area</label>
+                        <select name="Property_Area">
+                            <option>Urban</option>
+                            <option>Semiurban</option>
+                            <option>Rural</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Applicant Income</label>
+                        <input
+                            type="number"
+                            name="ApplicantIncome"
+                            value="5000"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label>Coapplicant Income</label>
+                        <input
+                            type="number"
+                            name="CoapplicantIncome"
+                            value="1500"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label>Loan Amount</label>
+                        <input
+                            type="number"
+                            name="LoanAmount"
+                            value="120"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label>Loan Amount Term</label>
+                        <input
+                            type="number"
+                            name="Loan_Amount_Term"
+                            value="360"
+                            required
+                        >
+                    </div>
+
+                    <div class="field">
+                        <label>Credit History</label>
+                        <select name="Credit_History">
+                            <option value="1">Good (1)</option>
+                            <option value="0">Bad (0)</option>
+                        </select>
+                    </div>
+
+                </div>
+
+                <div class="button-area">
+
+                    <button type="submit">
+                        Generate SHAP Explanation
+                    </button>
+
+                </div>
+
+            </form>
+
+        </section>
+
+
+        {% if prediction %}
+
+        <!-- Prediction -->
+
+        <section class="card">
+
+            {% if prediction == "Y" %}
+
+            <div class="prediction approved">
+
+                <h2>✓ Loan Approved</h2>
+
+                <p>
+                    Machine learning prediction:
+                    <strong>Y</strong>
+                </p>
+
+            </div>
+
+            {% else %}
+
+            <div class="prediction rejected">
+
+                <h2>✕ Loan Rejected</h2>
+
+                <p>
+                    Machine learning prediction:
+                    <strong>N</strong>
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- SHAP Explanation -->
+
+            <h2 class="title">
+                Feature Contributions
+            </h2>
+
+            <p class="explanation-intro">
+                SHAP values show how individual features contributed to this model prediction.
+            </p>
+
+
+            {% if contributions %}
+
+                {% for item in contributions %}
+
+                    {% set value = item.shap_value %}
+                    {% set magnitude = (value|abs * 100) %}
+                    {% if magnitude > 100 %}
+                        {% set magnitude = 100 %}
+                    {% endif %}
+
+                    <div class="feature">
+
+                        <div class="feature-header">
+
+                            <span class="feature-name">
+                                {{ item.feature }}
+                            </span>
+
+                            <span class="value
+                                {% if value >= 0 %}
+                                    positive
+                                {% else %}
+                                    negative
+                                {% endif %}
+                            ">
+                                {{ "%+.4f"|format(value) }}
+                            </span>
+
+                        </div>
+
+                        <div class="bar-background">
+
+                            <div
+                                class="bar
+                                {% if value >= 0 %}
+                                    bar-positive
+                                {% else %}
+                                    bar-negative
+                                {% endif %}"
+                                style="width: {{ magnitude }}%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+
+                <div class="legend">
+
+                    <span>
+                        <span class="dot green"></span>
+                        Positive contribution
+                    </span>
+
+                    <span>
+                        <span class="dot red"></span>
+                        Negative contribution
+                    </span>
+
+                </div>
+
+
+                <div class="info">
+
+                    <strong>How to read this:</strong>
+
+                    A positive SHAP value indicates a contribution in one direction
+                    of the model's output, while a negative value indicates a
+                    contribution in the opposite direction. Larger absolute values
+                    indicate larger contributions.
+
+                    SHAP explains the machine learning model; it does not make
+                    the loan prediction itself.
+
+                </div>
+
+            {% else %}
+
+                <div class="empty">
+
+                    Submit an applicant above to generate the explanation.
+
+                </div>
+
+            {% endif %}
+
+        </section>
+
+        {% endif %}
+
+    </main>
+
+</body>
+
+</html>

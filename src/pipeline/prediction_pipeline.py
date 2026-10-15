@@ -8,41 +8,42 @@ class PredictPipeline:
         pass
 
     def load_objects(self):
-        # This method loads the preprocessor and model objects from their respective pickle files.
-        # It returns both objects for use in making predictions.
+        # This method loads the preprocessor and the selected trained model
+        # from their respective pickle files.
 
         with open(
-            "artifacts/preprocessor.pkl",  # with is used to automatically close the file after the block of code is executed.
-            "rb"  # rb means read binary mode. This is necessary because pickle files are binary files.
-        ) as file:
-
-            # Read the bytes inside preprocessor.pkl and rebuild the original Python object.
-            preprocessor = pickle.load(file)
-
-        with open(
-            "artifacts/best_model.pkl",
+            "artifacts/preprocessor.pkl",
             "rb"
         ) as file:
 
-            # Read the bytes inside best_model.pkl and rebuild the original Python object
-            # (from best_model.pkl back into a LogisticRegression object).
+            # Read the bytes inside preprocessor.pkl and rebuild
+            # the original preprocessing object.
+            preprocessor = pickle.load(file)
+
+        with open(
+            "artifacts/model.pkl",
+            "rb"
+        ) as file:
+
+            # Read the bytes inside model.pkl and rebuild
+            # the selected trained model.
             model = pickle.load(file)
 
-        # Now this function gives us the ColumnTransformer and LogisticRegression objects.
         return (
             preprocessor,
             model
         )
 
     def predict(self, features):
-        # features is the DataFrame returned by customer.get_data_as_dataframe()
+        # features is the DataFrame returned by
+        # CustomData.get_data_as_dataframe()
 
         preprocessor, model = self.load_objects()
 
         # Apply the exact same preprocessing used during training.
         transformed_features = preprocessor.transform(features)
 
-        # This is the line where machine learning actually happens.
+        # Make the machine-learning prediction.
         prediction = model.predict(transformed_features)
 
         return prediction
@@ -78,11 +79,6 @@ class CustomData:
         self.Property_Area = Property_Area
 
     def get_data_as_dataframe(self):
-        # This method belongs to the current CustomData object.
-        # When you call:
-        # customer.get_data_as_dataframe()
-        # Python automatically passes:
-        # self = customer
 
         custom_data_input_dict = {
 
@@ -100,16 +96,14 @@ class CustomData:
 
         }
 
-        # Now this DataFrame has the same structure as the training data
-        # (excluding the target column), so your saved preprocessor
-        # can transform it correctly.
+        # Create a DataFrame with the same input structure
+        # used during model training.
         return pd.DataFrame(custom_data_input_dict)
 
 
 if __name__ == "__main__":
 
-    # Instead of typing into a website,
-    # we're entering the values directly in Python.
+    # Test prediction directly from Python.
 
     customer = CustomData(
         Gender="Male",
@@ -127,16 +121,11 @@ if __name__ == "__main__":
 
     features = customer.get_data_as_dataframe()
 
-    # This creates an object that knows how to:
-    # - Load the preprocessor
-    # - Load the model
-    # - Make predictions
-
+    # Create the prediction pipeline.
     pipeline = PredictPipeline()
 
+    # Generate prediction.
     prediction = pipeline.predict(features)
 
-    # Instead of printing the whole array,
-    # we just print the first element,
-    # which is the prediction for our single input data point.
+    # Print the prediction for the single input.
     print(prediction[0])

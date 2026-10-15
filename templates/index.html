@@ -1,122 +1,414 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>Loan Prediction System</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LoanPredict AI</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #172554;
+            color: white;
+            padding: 28px 20px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 30px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #dbeafe;
+            font-size: 15px;
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 35px auto;
+            padding: 0 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #172554;
+        }
+
+        .section-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: -12px;
+            margin-bottom: 22px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .field label {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            background: #ffffff;
+            font-size: 14px;
+            color: #111827;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .button-container {
+            margin-top: 28px;
+            text-align: center;
+        }
+
+        .predict-button {
+            border: none;
+            border-radius: 10px;
+            padding: 14px 35px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .predict-button:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+
+        .result {
+            text-align: center;
+            padding: 25px;
+            border-radius: 14px;
+        }
+
+        .approved {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #047857;
+        }
+
+        .rejected {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #b91c1c;
+        }
+
+        .result-icon {
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+
+        .result h2 {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .result p {
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #6b7280;
+            font-size: 13px;
+            padding: 10px 20px 30px;
+        }
+
+        @media (max-width: 700px) {
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .header h1 {
+                font-size: 25px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1 style="text-align:center;">
-        Loan Prediction System
-    </h1>
+    <header class="header">
+        <h1>LoanPredict AI</h1>
+        <p>MLOps-Powered Loan Assessment System</p>
+    </header>
 
-    <p style="text-align:center;">
-        Enter the applicant information below.
-    </p>
+    <main class="container">
 
-    <hr>
+        <form action="/predict" method="POST">
 
-    <form action="/predict" method="POST">
+            <!-- Applicant Information -->
 
-        <label>Gender</label><br>
-        <select name="Gender">
-            <option>Male</option>
-            <option>Female</option>
-        </select>
+            <section class="card">
 
-        <br><br>
+                <h2 class="section-title">
+                    Applicant Information
+                </h2>
 
-        <label>Married</label><br>
-        <select name="Married">
-            <option>Yes</option>
-            <option>No</option>
-        </select>
+                <p class="section-subtitle">
+                    Enter the applicant's personal and profile information.
+                </p>
 
-        <br><br>
+                <div class="form-grid">
 
-        <label>Dependents</label><br>
-        <select name="Dependents">
-            <option>0</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3+</option>
-        </select>
+                    <div class="field">
+                        <label>Gender</label>
+                        <select name="Gender">
+                            <option>Male</option>
+                            <option>Female</option>
+                        </select>
+                    </div>
 
-        <br><br>
+                    <div class="field">
+                        <label>Married</label>
+                        <select name="Married">
+                            <option>Yes</option>
+                            <option>No</option>
+                        </select>
+                    </div>
 
-        <label>Education</label><br>
-        <select name="Education">
-            <option>Graduate</option>
-            <option>Not Graduate</option>
-        </select>
+                    <div class="field">
+                        <label>Dependents</label>
+                        <select name="Dependents">
+                            <option>0</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3+</option>
+                        </select>
+                    </div>
 
-        <br><br>
+                    <div class="field">
+                        <label>Education</label>
+                        <select name="Education">
+                            <option>Graduate</option>
+                            <option>Not Graduate</option>
+                        </select>
+                    </div>
 
-        <label>Self Employed</label><br>
-        <select name="Self_Employed">
-            <option>Yes</option>
-            <option>No</option>
-        </select>
+                    <div class="field">
+                        <label>Self Employed</label>
+                        <select name="Self_Employed">
+                            <option>No</option>
+                            <option>Yes</option>
+                        </select>
+                    </div>
 
-        <br><br>
+                    <div class="field">
+                        <label>Property Area</label>
+                        <select name="Property_Area">
+                            <option>Urban</option>
+                            <option>Semiurban</option>
+                            <option>Rural</option>
+                        </select>
+                    </div>
 
-        <label>Applicant Income</label><br>
-        <input type="number" name="ApplicantIncome" required>
+                </div>
 
-        <br><br>
+            </section>
 
-        <label>Coapplicant Income</label><br>
-        <input type="number" name="CoapplicantIncome" required>
 
-        <br><br>
+            <!-- Financial Information -->
 
-        <label>Loan Amount</label><br>
-        <input type="number" name="LoanAmount" required>
+            <section class="card">
 
-        <br><br>
+                <h2 class="section-title">
+                    Financial Information
+                </h2>
 
-        <label>Loan Amount Term</label><br>
-        <input type="number" name="Loan_Amount_Term" required>
+                <p class="section-subtitle">
+                    Enter the financial details of the loan application.
+                </p>
 
-        <br><br>
+                <div class="form-grid">
 
-        <label>Credit History</label><br>
-        <select name="Credit_History">
-            <option value="1">Good (1)</option>
-            <option value="0">Bad (0)</option>
-        </select>
+                    <div class="field">
+                        <label>Applicant Income</label>
+                        <input
+                            type="number"
+                            name="ApplicantIncome"
+                            placeholder="e.g. 5000"
+                            required
+                        >
+                    </div>
 
-        <br><br>
+                    <div class="field">
+                        <label>Coapplicant Income</label>
+                        <input
+                            type="number"
+                            name="CoapplicantIncome"
+                            placeholder="e.g. 1500"
+                            required
+                        >
+                    </div>
 
-        <label>Property Area</label><br>
-        <select name="Property_Area">
-            <option>Urban</option>
-            <option>Semiurban</option>
-            <option>Rural</option>
-        </select>
+                    <div class="field">
+                        <label>Loan Amount</label>
+                        <input
+                            type="number"
+                            name="LoanAmount"
+                            placeholder="e.g. 120"
+                            required
+                        >
+                    </div>
 
-        <br><br>
+                    <div class="field">
+                        <label>Loan Amount Term</label>
+                        <input
+                            type="number"
+                            name="Loan_Amount_Term"
+                            placeholder="e.g. 360"
+                            required
+                        >
+                    </div>
 
-        <button type="submit">
-            Predict
-        </button>
+                    <div class="field">
+                        <label>Credit History</label>
+                        <select name="Credit_History">
+                            <option value="1">Good (1)</option>
+                            <option value="0">Bad (0)</option>
+                        </select>
+                    </div>
 
-    </form>
+                </div>
 
-    <br><br>
+                <div class="button-container">
 
-    {% if prediction == "Y" %}
-        <h2 style="color:green; text-align:center;">
-            ✅ Loan Approved
-        </h2>
-    {% endif %}
+                    <button
+                        type="submit"
+                        class="predict-button"
+                    >
+                        Predict Loan Eligibility
+                    </button>
 
-    {% if prediction == "N" %}
-        <h2 style="color:red; text-align:center;">
-            ❌ Loan Rejected
-        </h2>
-    {% endif %}
+                </div>
+
+            </section>
+
+        </form>
+
+
+        <!-- Prediction Result -->
+
+        {% if prediction == "Y" %}
+
+        <section class="card">
+
+            <div class="result approved">
+
+                <div class="result-icon">
+                    ✓
+                </div>
+
+                <h2>
+                    Loan Approved
+                </h2>
+
+                <p>
+                    The machine learning model predicted:
+                    <strong>Y</strong>
+                </p>
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+
+        {% if prediction == "N" %}
+
+        <section class="card">
+
+            <div class="result rejected">
+
+                <div class="result-icon">
+                    ✕
+                </div>
+
+                <h2>
+                    Loan Rejected
+                </h2>
+
+                <p>
+                    The machine learning model predicted:
+                    <strong>N</strong>
+                </p>
+
+            </div>
+
+        </section>
+
+        {% endif %}
+
+    </main>
+
+
+    <footer class="footer">
+        LoanPredict AI • Machine Learning • MLOps • Explainable AI
+    </footer>
 
 </body>
 

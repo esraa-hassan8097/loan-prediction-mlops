@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>LoanPredict AI Assistant</title>
+
+    <style>
+
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f7fa;
+        }
+
+        h1 {
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .primary {
+            background: #2563eb;
+            color: white;
+        }
+
+        .sign {
+            background: #16a34a;
+            color: white;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .success {
+            background: #dcfce7;
+            color: #166534;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .waiting {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .prediction {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .thread {
+            font-family: monospace;
+            background: #f1f5f9;
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 700px) {
+
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+    <h1>LoanPredict AI Assistant</h1>
+
+    <div class="subtitle">
+        LangGraph Human-in-the-Loop Workflow
+    </div>
+
+
+    <!-- ============================================== -->
+    <!-- ERROR -->
+    <!-- ============================================== -->
+
+    {% if error %}
+
+    <div class="card">
+
+        <div class="error">
+            {{ error }}
+        </div>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ============================================== -->
+    <!-- START WORKFLOW -->
+    <!-- ============================================== -->
+
+    {% if not result %}
+
+    <div class="card">
+
+        <h2>Start Loan Workflow</h2>
+
+        <form
+            method="POST"
+            action="/assistant"
+        >
+
+            <label>
+                Question
+            </label>
+
+            <textarea
+                name="question"
+                placeholder="Example: Predict whether this loan application will be approved."
+                required
+            >{{ question or "" }}</textarea>
+
+
+            <h3>Applicant Information</h3>
+
+            <div class="grid">
+
+
+                <div>
+
+                    <label>
+                        Gender
+                    </label>
+
+                    <select name="Gender">
+
+                        <option value="Male">
+                            Male
+                        </option>
+
+                        <option value="Female">
+                            Female
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Married
+                    </label>
+
+                    <select name="Married">
+
+                        <option value="Yes">
+                            Yes
+                        </option>
+
+                        <option value="No">
+                            No
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Dependents
+                    </label>
+
+                    <input
+                        name="Dependents"
+                        value="0"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Education
+                    </label>
+
+                    <select name="Education">
+
+                        <option value="Graduate">
+                            Graduate
+                        </option>
+
+                        <option value="Not Graduate">
+                            Not Graduate
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Self Employed
+                    </label>
+
+                    <select name="Self_Employed">
+
+                        <option value="No">
+                            No
+                        </option>
+
+                        <option value="Yes">
+                            Yes
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Applicant Income
+                    </label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        name="ApplicantIncome"
+                        value="5000"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Coapplicant Income
+                    </label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        name="CoapplicantIncome"
+                        value="2000"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Loan Amount
+                    </label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        name="LoanAmount"
+                        value="150"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Loan Term
+                    </label>
+
+                    <input
+                        type="number"
+                        step="any"
+                        name="Loan_Amount_Term"
+                        value="360"
+                    >
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Credit History
+                    </label>
+
+                    <select name="Credit_History">
+
+                        <option value="1">
+                            1 - Good
+                        </option>
+
+                        <option value="0">
+                            0 - Poor
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div>
+
+                    <label>
+                        Property Area
+                    </label>
+
+                    <select name="Property_Area">
+
+                        <option value="Urban">
+                            Urban
+                        </option>
+
+                        <option value="Semiurban">
+                            Semiurban
+                        </option>
+
+                        <option value="Rural">
+                            Rural
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+            </div>
+
+
+            <button
+                type="submit"
+                class="primary"
+            >
+                Start LangGraph Workflow
+            </button>
+
+        </form>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ============================================== -->
+    <!-- THREAD INFORMATION -->
+    <!-- ============================================== -->
+
+    {% if thread_id %}
+
+    <div class="card">
+
+        <h3>
+            LangGraph Thread
+        </h3>
+
+        <div class="thread">
+            {{ thread_id }}
+        </div>
+
+        <p>
+            This ID identifies this workflow's
+            checkpoint and state.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ============================================== -->
+    <!-- INTERRUPTED / WAITING FOR SIGNATURE -->
+    <!-- ============================================== -->
+
+    {% if result and "__interrupt__" in result %}
+
+    <div class="card">
+
+        <div class="waiting">
+
+            <h2>
+                Application Waiting for Signature
+            </h2>
+
+            <p>
+                The loan application has reached the
+                human-signature step.
+            </p>
+
+            <p>
+                <strong>
+                    The ML prediction has NOT been executed yet.
+                </strong>
+            </p>
+
+            <p>
+                The applicant must sign the application
+                before LangGraph is allowed to continue
+                to the prediction node.
+            </p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ============================================== -->
+    <!-- SIGNATURE FORM -->
+    <!-- ============================================== -->
+
+    <div class="card">
+
+        <h2>
+            Applicant Signature
+        </h2>
+
+        <p>
+            Please confirm that the application information
+            is correct and sign before submitting it
+            for prediction.
+        </p>
+
+        <form
+            method="POST"
+            action="/assistant/resume"
+        >
+
+            <input
+                type="hidden"
+                name="thread_id"
+                value="{{ thread_id }}"
+            >
+
+
+            <label>
+                Signature
+            </label>
+
+            <input
+                type="text"
+                name="signature"
+                placeholder="Enter applicant signature"
+                required
+            >
+
+
+            <label>
+                Signed By
+            </label>
+
+            <input
+                type="text"
+                name="signed_by"
+                placeholder="Applicant name"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="sign"
+            >
+                Sign & Submit Application
+            </button>
+
+        </form>
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ============================================== -->
+    <!-- FINAL RESULT -->
+    <!-- ============================================== -->
+
+    {% if result and "__interrupt__" not in result %}
+
+    <div class="card">
+
+        <div class="success">
+
+            <h2>
+                Workflow Complete
+            </h2>
+
+            <p>
+                LangGraph completed the requested workflow.
+            </p>
+
+        </div>
+
+
+        <!-- PREDICTION RESULT -->
+
+        {% if result.get("prediction") %}
+
+        <h3>
+            Loan Prediction
+        </h3>
+
+        <div class="prediction">
+
+            {% if result.get("prediction") == "Y" %}
+
+                Approved
+
+            {% elif result.get("prediction") == "N" %}
+
+                Not Approved
+
+            {% else %}
+
+                {{ result.get("prediction") }}
+
+            {% endif %}
+
+        </div>
+
+
+        {% if result.get("signature_status") %}
+
+        <p>
+            Signature Status:
+            <strong>
+                {{ result.get("signature_status") }}
+            </strong>
+        </p>
+
+        {% endif %}
+
+
+        {% if result.get("human_signature") %}
+
+        <h3>
+            Signature Information
+        </h3>
+
+        <pre>{{ result.get("human_signature") }}</pre>
+
+        {% endif %}
+
+        {% endif %}
+
+
+        <!-- EXPLANATION RESULT -->
+
+        {% if result.get("explanation") %}
+
+        <h3>
+            SHAP Explanation
+        </h3>
+
+        <pre>{{ result.get("explanation") }}</pre>
+
+        {% endif %}
+
+
+        <!-- POLICY / RAG RESULT -->
+
+        {% if result.get("policy_context") %}
+
+        <h3>
+            Policy Result
+        </h3>
+
+        <pre>{{ result.get("policy_context") }}</pre>
+
+        {% endif %}
+
+
+        <!-- ROUTE -->
+
+        {% if result.get("route") %}
+
+        <p>
+            LangGraph Route:
+            <strong>
+                {{ result.get("route") }}
+            </strong>
+        </p>
+
+        {% endif %}
+
+    </div>
+
+
+    <!-- START ANOTHER WORKFLOW -->
+
+    <div class="card">
+
+        <a href="/assistant">
+            Start another workflow
+        </a>
+
+    </div>
+
+    {% endif %}
+
+
+</body>
+
+</html>

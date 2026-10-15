@@ -1,0 +1,47 @@
+LOAN ELIGIBILITY POLICY
+
+Credit History
+A positive credit history is an important factor considered during loan assessment.
+A negative or unavailable credit history may reduce the likelihood of loan approval.
+Credit history is considered together with other applicant information.
+
+Applicant Income
+Applicant income is considered when assessing a loan application.
+Higher income does not automatically guarantee loan approval.
+Income should be evaluated together with other application characteristics.
+
+Coapplicant Income
+Coapplicant income may contribute to the assessment of the applicant's financial situation.
+It does not independently determine whether a loan will be approved.
+
+Loan Amount
+The requested loan amount is considered during loan assessment.
+A higher requested amount does not automatically result in rejection or approval.
+
+Loan Term
+The requested loan term is considered as part of the loan application.
+The loan term alone does not determine the final decision.
+
+Education
+Education information may be considered as part of the applicant profile.
+Education alone does not determine loan approval.
+
+Marital Status
+Marital status may be included as applicant information during assessment.
+Marital status alone does not determine loan approval.
+
+Dependents
+The number of dependents may be considered as part of the applicant profile.
+The number of dependents alone does not determine loan approval.
+
+Property Area
+Property area may be included as part of the applicant information.
+Property area alone does not determine loan approval.
+
+Self Employment
+Self-employment status may be considered as part of the applicant profile.
+Self-employment status alone does not determine loan approval.
+
+Important
+The machine learning model in this project produces the loan prediction.
+The policy information in this document provides general context and must not override the machine learning model's prediction.

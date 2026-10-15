@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>MLOps Monitoring Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<!-- ===========================
+Navigation Bar
+=========================== -->
+
+<nav class="navbar navbar-dark bg-dark shadow">
+
+    <div class="container">
+
+        <span class="navbar-brand">
+
+            Loan Prediction MLOps Dashboard
+
+        </span>
+
+        <span class="badge bg-success">
+
+            🟢 System Healthy
+
+        </span>
+
+    </div>
+
+</nav>
+
+<!-- ===========================
+Main Container
+=========================== -->
+
+<div class="container mt-5">
+
+    <h2 class="text-center mb-5">
+
+        Model Monitoring Dashboard
+
+    </h2>
+
+    <div class="row g-4">
+
+        <!-- ===================== -->
+        <!-- Data Drift -->
+        <!-- ===================== -->
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-primary text-white">
+
+                    📊 Data Drift
+
+                </div>
+
+                <div class="card-body">
+
+                    {% if drift_report %}
+
+                    <ul class="list-group">
+
+                        {% for row in drift_report %}
+
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+
+                            <strong>
+
+                                {{ row["Feature"] }}
+
+                            </strong>
+
+                            {% if row["Drift Detected"] %}
+
+                            <span class="badge bg-danger">
+
+                                Drift
+
+                            </span>
+
+                            {% else %}
+
+                            <span class="badge bg-success">
+
+                                Normal
+
+                            </span>
+
+                            {% endif %}
+
+                        </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                    {% else %}
+
+                    <p>No Data Drift report found.</p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================== -->
+        <!-- Prediction Monitoring -->
+        <!-- ===================== -->
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-success text-white">
+
+                    📈 Prediction Monitoring
+
+                </div>
+
+                <div class="card-body">
+
+                    {% if prediction_report %}
+
+                    <ul class="list-group">
+
+                        {% for row in prediction_report %}
+
+                        <li class="list-group-item d-flex justify-content-between">
+
+                            {{ row["Prediction"] }}
+
+                            <strong>
+
+                                {{ row["Percentage"] }}%
+
+                            </strong>
+
+                        </li>
+
+                        {% endfor %}
+
+                    </ul>
+
+                    {% else %}
+
+                    <p>No Prediction Monitoring report found.</p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================== -->
+        <!-- Performance -->
+        <!-- ===================== -->
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-warning">
+
+                    🎯 Performance Monitoring
+
+                </div>
+
+                <div class="card-body">
+
+                    {% if performance_report %}
+
+                    <table class="table table-bordered">
+
+                        <thead>
+
+                        <tr>
+
+                            <th>Metric</th>
+
+                            <th>Training</th>
+
+                            <th>Production</th>
+
+                        </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                        {% for row in performance_report %}
+
+                        <tr>
+
+                            <td>{{ row["Metric"] }}</td>
+
+                            <td>{{ row["Training"] }}</td>
+
+                            <td>{{ row["Production"] }}</td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                    {% else %}
+
+                    <p>No Performance report found.</p>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- ===================== -->
+        <!-- Decision Engine -->
+        <!-- ===================== -->
+
+        <div class="col-md-6">
+
+            <div class="card shadow">
+
+                <div class="card-header bg-danger text-white">
+
+                    🧠 Decision Engine
+
+                </div>
+
+                <div class="card-body">
+
+                    <h5>
+
+                        🟠 Investigation Required
+
+                    </h5>
+
+                    <hr>
+
+                    <ul>
+
+                        <li>
+
+                            Data Drift detected
+
+                        </li>
+
+                        <li>
+
+                            Performance decreased
+
+                        </li>
+
+                    </ul>
+
+                    <div class="alert alert-warning">
+
+                        Recommendation:
+
+                        Investigate before retraining.
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

@@ -2,49 +2,40 @@ services:
   loan-api:
     build: .
     container_name: loan-app
-
     ports:
       - "${PORT}:5000"
-
     environment:
       FLASK_ENV: ${FLASK_ENV}
       MODEL_PATH: ${MODEL_PATH}
 
-    volumes:
-      - loan-data:/app/artifacts
-
   mlflow:
     image: ghcr.io/mlflow/mlflow:latest
     container_name: mlflow-server
-
     depends_on:
       - postgres
-
     ports:
       - "5001:5000"
-
+    volumes:
+      - mlflow-artifacts:/mlartifacts
     command: >
       mlflow server
       --host 0.0.0.0
       --port 5000
       --backend-store-uri postgresql://mlflow:mlflow@postgres:5432/mlflow_db
-      --default-artifact-root /mlartifacts
+      --artifacts-destination /mlartifacts
 
   postgres:
     image: postgres:17
     container_name: postgres-db
-
     environment:
       POSTGRES_USER: mlflow
       POSTGRES_PASSWORD: mlflow
       POSTGRES_DB: mlflow_db
-
     ports:
       - "5432:5432"
-
     volumes:
       - postgres-data:/var/lib/postgresql/data
 
 volumes:
-  loan-data:
   postgres-data:
+  mlflow-artifacts:

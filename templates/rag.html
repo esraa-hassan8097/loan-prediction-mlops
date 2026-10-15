@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>LoanPredict AI — RAG Assistant</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        body {
+            background: #f4f7fb;
+            color: #1e293b;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #0f172a, #1e3a8a);
+            color: white;
+            padding: 28px 8%;
+        }
+
+        header h1 {
+            font-size: 30px;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            color: #cbd5e1;
+            font-size: 15px;
+        }
+
+        nav {
+            margin-top: 22px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #dbeafe;
+            padding: 9px 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            background: rgba(255,255,255,0.08);
+        }
+
+        nav a:hover {
+            background: rgba(255,255,255,0.18);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 35px auto;
+        }
+
+        .intro {
+            margin-bottom: 25px;
+        }
+
+        .intro h2 {
+            font-size: 25px;
+            margin-bottom: 8px;
+        }
+
+        .intro p {
+            color: #64748b;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 28px;
+            box-shadow: 0 8px 30px rgba(15, 23, 42, 0.08);
+            margin-bottom: 25px;
+        }
+
+        .card h3 {
+            margin-bottom: 8px;
+            font-size: 20px;
+        }
+
+        .card-description {
+            color: #64748b;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 130px;
+            padding: 16px;
+            border: 1px solid #cbd5e1;
+            border-radius: 12px;
+            resize: vertical;
+            font-size: 15px;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        button {
+            margin-top: 16px;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        .answer {
+            border-left: 5px solid #2563eb;
+            background: #eff6ff;
+            padding: 20px;
+            border-radius: 10px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+
+        .architecture {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .step {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px 18px;
+            text-align: center;
+            min-width: 150px;
+        }
+
+        .step strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .step span {
+            color: #64748b;
+            font-size: 12px;
+        }
+
+        .arrow {
+            font-size: 22px;
+            color: #94a3b8;
+        }
+
+        .source {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 18px;
+            margin-top: 15px;
+            background: #fafafa;
+        }
+
+        .source-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .source-title {
+            font-weight: bold;
+        }
+
+        .score {
+            background: #dcfce7;
+            color: #166534;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .source-content {
+            color: #475569;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .tag {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        footer {
+            text-align: center;
+            color: #94a3b8;
+            padding: 30px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                width: 94%;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .arrow {
+                transform: rotate(90deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <h1>LoanPredict AI</h1>
+
+    <p>
+        Retrieval-Augmented Generation — Policy Knowledge Assistant
+    </p>
+
+    <nav>
+        <a href="/">Prediction</a>
+        <a href="/shap">SHAP</a>
+        <a href="/rag">RAG</a>
+        <a href="/assistant">AI Assistant</a>
+        <a href="/dashboard">Monitoring</a>
+    </nav>
+
+</header>
+
+
+<div class="container">
+
+    <div class="intro">
+
+        <h2>Loan Policy Assistant</h2>
+
+        <p>
+            Ask a question about loan eligibility and retrieve information
+            from the project's policy knowledge base.
+        </p>
+
+    </div>
+
+
+    <!-- QUESTION -->
+
+    <div class="card">
+
+        <h3>Ask the Knowledge Base</h3>
+
+        <p class="card-description">
+            Your question is converted into an embedding and searched
+            against the Azure AI Search vector index.
+        </p>
+
+        <form method="POST" action="/rag">
+
+            <textarea
+                name="question"
+                placeholder="Example: How does credit history affect loan assessment?"
+                required>{{ question or "" }}</textarea>
+
+            <button type="submit">
+                Search Policy & Generate Answer
+            </button>
+
+        </form>
+
+    </div>
+
+
+    {% if answer %}
+
+    <!-- ANSWER -->
+
+    <div class="card">
+
+        <h3>AI Answer</h3>
+
+        <p class="card-description">
+            GPT-5-mini generated this response using the retrieved policy context.
+        </p>
+
+        <div class="answer">
+            {{ answer }}
+        </div>
+
+        <span class="tag">
+            RAG + GPT-5-mini
+        </span>
+
+    </div>
+
+    {% endif %}
+
+
+    {% if documents %}
+
+    <!-- RETRIEVED DOCUMENTS -->
+
+    <div class="card">
+
+        <h3>Retrieved Evidence</h3>
+
+        <p class="card-description">
+            These documents were retrieved from Azure AI Search and supplied
+            as context to the language model.
+        </p>
+
+
+        {% for document in documents %}
+
+        <div class="source">
+
+            <div class="source-header">
+
+                <div class="source-title">
+                    {{ document.source }}
+                </div>
+
+                <div class="score">
+                    Retrieval Score: {{ "%.4f"|format(document.score) }}
+                </div>
+
+            </div>
+
+            <div class="source-content">
+                {{ document.content }}
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% endif %}
+
+
+    <!-- ARCHITECTURE -->
+
+    <div class="card">
+
+        <h3>How RAG Works</h3>
+
+        <p class="card-description">
+            The system retrieves relevant knowledge before asking the LLM
+            to generate the answer.
+        </p>
+
+        <div class="architecture">
+
+            <div class="step">
+                <strong>User Question</strong>
+                <span>Natural language</span>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="step">
+                <strong>Embedding</strong>
+                <span>text-embedding-3-small</span>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="step">
+                <strong>Azure AI Search</strong>
+                <span>Vector retrieval</span>
+            </div>
+
+            <div class="arrow">→</div>
+
+            <div class="step">
+                <strong>GPT-5-mini</strong>
+                <span>Answer generation</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<footer>
+    LoanPredict AI • RAG • Azure AI Search • Generative AI
+</footer>
+
+</body>
+</html>
