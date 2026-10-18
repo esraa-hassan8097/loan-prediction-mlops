@@ -49,10 +49,10 @@ mlflow-tracing==3.14.0
 multidict==6.7.1
 narwhals==2.23.0
 numpy==2.5.1
-opentelemetry-api==1.44.0
-opentelemetry-proto==1.44.0
-opentelemetry-sdk==1.44.0
-opentelemetry-semantic-conventions==0.65b0
+opentelemetry-api==1.45.1
+opentelemetry-proto==1.45.1
+opentelemetry-sdk==1.45.1
+opentelemetry-semantic-conventions==0.66b1
 packaging==26.2
 pandas==2.3.3
 pillow==12.3.0
