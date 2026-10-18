@@ -7,9 +7,13 @@ services:
     environment:
       FLASK_ENV: ${FLASK_ENV}
       MODEL_PATH: ${MODEL_PATH}
+    volumes:
+      - loan-data:/app/artifacts
 
   mlflow:
-    image: ghcr.io/mlflow/mlflow:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
     container_name: mlflow-server
     depends_on:
       - postgres
@@ -37,5 +41,6 @@ services:
       - postgres-data:/var/lib/postgresql/data
 
 volumes:
+  loan-data:
   postgres-data:
   mlflow-artifacts:
