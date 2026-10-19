@@ -101,3 +101,5 @@ azure-search-documents==12.0.0
 langgraph==1.2.12
 
 langfuse==4.17.0
+
+langchain==1.4.3
