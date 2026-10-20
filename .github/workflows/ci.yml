@@ -57,6 +57,24 @@ jobs:
           cp -r ~/.azure/* ~/.azure-fabric/ 2>/dev/null || true
           AZURE_CONFIG_DIR=$HOME/.azure-fabric python -m src.components.data_ingestion
 
+      - name: Verify updated Fabric data
+        run: |
+          python - <<'EOF'
+          import pandas as pd
+
+          train = pd.read_csv("artifacts/train.csv")
+          test = pd.read_csv("artifacts/test.csv")
+
+          combined = pd.concat([train, test], ignore_index=True)
+
+          print("Total rows ingested from Fabric:", len(combined))
+
+          assert len(combined) == 615
+          assert "LP999999" in combined["Loan_ID"].values
+
+          print("Fabric updated data verified successfully.")
+          EOF
+
       - name: Run tests
         run: |
           pytest
