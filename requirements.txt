@@ -103,3 +103,5 @@ langgraph==1.2.12
 langfuse==4.17.0
 
 langchain==1.4.3
+
+pyodbc==5.3.0
