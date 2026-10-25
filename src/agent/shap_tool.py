@@ -28,14 +28,14 @@ def explain_loan(
     # ---------------------------------------------------------
 
     with open("artifacts/preprocessor.pkl", "rb") as file:
-        preprocessor = pickle.load(file)
+        preprocessor = pickle.load(file)  # nosec B301 - trusted internal model artifact
 
     # ---------------------------------------------------------
     # 2. Load the trained ML model
     # ---------------------------------------------------------
 
     with open("artifacts/model.pkl", "rb") as file:
-        model = pickle.load(file)
+        model = pickle.load(file) # nosec B301 - trusted internal model artifact
 
     # ---------------------------------------------------------
     # 3. Load training data to use as SHAP background
