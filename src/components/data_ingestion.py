@@ -1,4 +1,5 @@
 import os
+import json
 import struct
 import subprocess
 from dataclasses import dataclass
@@ -14,10 +15,22 @@ from src.logger import logging
 class DataIngestionConfig:
     train_data_path: str = os.path.join("artifacts", "train.csv")
     test_data_path: str = os.path.join("artifacts", "test.csv")
-    fabric_server: str = "m3sh5gudvcvejaykp2k6pq3axa-m4e3rofohg5urbtbsz2zpkv5vq.datawarehouse.fabric.microsoft.com"
+    metadata_path: str = os.path.join("artifacts", "data_metadata.json")
+
+    fabric_server: str = (
+        "m3sh5gudvcvejaykp2k6pq3axa-"
+        "m4e3rofohg5urbtbsz2zpkv5vq.datawarehouse.fabric.microsoft.com"
+    )
+
     fabric_database: str = "loan_mlops_lakehouse"
     fabric_table: str = "dbo.loan_raw"
+
     azure_config_dir: str = os.path.expanduser("~/.azure-fabric")
+
+    fabric_data_timestamp: str = os.getenv(
+        "FABRIC_DATA_TIMESTAMP",
+        "latest"
+    )
 
 
 class DataIngestion:
@@ -76,6 +89,21 @@ class DataIngestion:
 
         return connection
 
+    def build_query(self):
+        timestamp = self.ingestion_config.fabric_data_timestamp
+
+        if timestamp.lower() == "latest":
+            return (
+                f"SELECT * "
+                f"FROM {self.ingestion_config.fabric_table}"
+            )
+
+        return (
+            f"SELECT * "
+            f"FROM {self.ingestion_config.fabric_table} "
+            f"OPTION (FOR TIMESTAMP AS OF '{timestamp}')"
+        )
+
     def initiate_data_ingestion(self):
         logging.info("Entered the data ingestion method.")
 
@@ -83,13 +111,15 @@ class DataIngestion:
 
         connection = self.get_fabric_connection()
 
-        logging.info("Reading loan dataset from Microsoft Fabric.")
+        query = self.build_query()
+
+        logging.info(
+            f"Reading Fabric data using snapshot: "
+            f"{self.ingestion_config.fabric_data_timestamp}"
+        )
 
         cursor = connection.cursor()
-
-        cursor.execute(
-            f"SELECT * FROM {self.ingestion_config.fabric_table}"
-        )
+        cursor.execute(query)
 
         rows = cursor.fetchall()
 
@@ -106,18 +136,32 @@ class DataIngestion:
         connection.close()
 
         logging.info(
-            f"Dataset loaded from Fabric successfully. Shape: {df.shape}"
+            f"Dataset loaded successfully. Shape: {df.shape}"
         )
 
-        logging.info("Splitting dataset into train and test sets.")
+        metadata = {
+            "source": "Microsoft Fabric",
+            "table": self.ingestion_config.fabric_table,
+            "data_snapshot":
+                self.ingestion_config.fabric_data_timestamp,
+            "row_count": len(df)
+        }
+
+        with open(
+            self.ingestion_config.metadata_path,
+            "w"
+        ) as file:
+            json.dump(metadata, file, indent=4)
+
+        logging.info(
+            f"Data metadata saved: {metadata}"
+        )
 
         train_set, test_set = train_test_split(
             df,
             test_size=0.2,
             random_state=42
         )
-
-        logging.info("Train and test sets created.")
 
         train_set.to_csv(
             self.ingestion_config.train_data_path,
