@@ -1,15 +1,13 @@
 import os
+import pickle
 from dataclasses import dataclass
 
-import pandas as pd
 import numpy as np
-
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+import pandas as pd
 from sklearn.compose import ColumnTransformer
-
-import pickle
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
 @dataclass

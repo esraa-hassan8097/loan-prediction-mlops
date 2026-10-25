@@ -22,13 +22,11 @@ import os
 import sys
 
 import pandas as pd
-
 from evidently import Report
-from evidently.presets import DataSummaryPreset, DataDriftPreset
+from evidently.presets import DataDriftPreset, DataSummaryPreset
 
 from src.exception import CustomException
 from src.logger import logging
-
 
 # ==========================================================
 # Configuration
@@ -177,7 +175,7 @@ class EvidentlyMonitor:
             return snapshot
 
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
 
             logging.error(
                 "Evidently monitoring failed."

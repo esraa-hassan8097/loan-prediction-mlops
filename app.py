@@ -1,51 +1,24 @@
-from flask import Flask, render_template, request
-
 import atexit
 import os
-
-
-
-import pandas as pd
-
 import uuid
 
+import pandas as pd
 from dotenv import load_dotenv
-
-
-
-from langgraph.types import Command
+from flask import Flask, render_template, request
 from langfuse import get_client, propagate_attributes
 from langfuse.langchain import CallbackHandler
-
-
-
-from src.pipeline.prediction_pipeline import (
-
-    PredictPipeline,
-
-    CustomData,
-
-)
-
-
-
-from src.components.production_logger import ProductionLogger
-
-from src.agent.shap_tool import explain_loan
-
-from src.rag.rag_pipeline import answer_question
-
-from src.rag.retriever import retrieve_policy
-
-
+from langgraph.types import Command
 
 # LangGraph
-
 from src.agent.graph import build_loan_graph
-
-
-
-
+from src.agent.shap_tool import explain_loan
+from src.components.production_logger import ProductionLogger
+from src.pipeline.prediction_pipeline import (
+    CustomData,
+    PredictPipeline,
+)
+from src.rag.rag_pipeline import answer_question
+from src.rag.retriever import retrieve_policy
 
 # Load environment variables for LangSmith, Langfuse, Azure, etc.
 load_dotenv(dotenv_path=".env")
@@ -253,7 +226,7 @@ def dashboard():
 
         )
 
-    except Exception:
+    except Exception:  # noqa: BLE001
 
         drift_report = []
 
@@ -271,7 +244,7 @@ def dashboard():
 
         )
 
-    except Exception:
+    except Exception:  # noqa: BLE001
 
         prediction_report = []
 
@@ -289,7 +262,7 @@ def dashboard():
 
         )
 
-    except Exception:
+    except Exception:  # noqa: BLE001
 
         performance_report = []
 
@@ -1051,7 +1024,7 @@ def assistant_page():
 
 
 
-    except Exception:
+    except Exception:  
 
 
 
@@ -1249,7 +1222,6 @@ def assistant_resume():
 
     # Use the SAME thread_id.
 
-    #
 
     # LangGraph uses this to locate the paused checkpoint.
 
@@ -1271,7 +1243,6 @@ def assistant_resume():
 
     # Human signature response
 
-    #
 
     # This dictionary becomes the return value of
 
@@ -1409,7 +1380,7 @@ def assistant_resume():
 
 
 
-    except Exception:
+    except Exception:  
 
 
 
@@ -1487,10 +1458,10 @@ if __name__ == "__main__":
 
     app.run(
 
-        host="0.0.0.0",
+        host="0.0.0.0", # nosec B104 - required for container networking
 
         port=5000,
 
-        debug=True,
+        debug=False,
 
     )

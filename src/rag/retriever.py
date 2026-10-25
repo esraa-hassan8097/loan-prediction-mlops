@@ -3,7 +3,6 @@ from azure.identity import DefaultAzureCredential
 from azure.search.documents import SearchClient
 from azure.search.documents.models import VectorizedQuery
 
-
 # Azure AI Foundry
 project = AIProjectClient(
     endpoint="https://loan-prediction-mlops-recoucelab.services.ai.azure.com",

@@ -1,9 +1,4 @@
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score
-)
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 
 def evaluate_model(model, X_train, y_train, X_test, y_test):

@@ -1,7 +1,6 @@
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 
-
 project = AIProjectClient(
     endpoint="https://loan-prediction-mlops-recoucelab.services.ai.azure.com",
     credential=DefaultAzureCredential(),

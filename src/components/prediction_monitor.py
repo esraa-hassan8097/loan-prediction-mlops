@@ -53,7 +53,6 @@ import pandas as pd
 from src.exception import CustomException
 from src.logger import logging
 
-
 # ==========================================================
 # Configuration
 # ==========================================================
@@ -177,7 +176,7 @@ class PredictionMonitor:
 
             return prediction_report
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
 
             logging.error(
                 "Prediction Monitoring failed."

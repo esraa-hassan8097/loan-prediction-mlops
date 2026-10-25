@@ -1,10 +1,10 @@
 import pickle
-import shap
+
 import pandas as pd
+import shap
 
-from src.pipeline.prediction_pipeline import CustomData
 from src.genai.llm_client import LLMClient
-
+from src.pipeline.prediction_pipeline import CustomData
 
 # -----------------------------
 # 1. Load model and preprocessor

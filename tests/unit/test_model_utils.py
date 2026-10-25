@@ -1,5 +1,5 @@
-from sklearn.linear_model import LogisticRegression
 from sklearn.datasets import make_classification
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import train_test_split
 
 from src.utils.model_utils import evaluate_model

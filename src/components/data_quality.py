@@ -40,7 +40,6 @@ import pandas as pd
 from src.exception import CustomException
 from src.logger import logging
 
-
 # ==========================================================
 # Configuration
 # ==========================================================
@@ -372,7 +371,7 @@ class DataQuality:
             return quality_report
 
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
 
             logging.error(
                 "Data Quality Monitoring failed."

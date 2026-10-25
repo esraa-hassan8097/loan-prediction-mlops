@@ -1,4 +1,5 @@
 import pickle  # pickle is Python's built-in library for saving and loading Python objects.
+
 import pandas as pd
 
 
@@ -18,7 +19,7 @@ class PredictPipeline:
 
             # Read the bytes inside preprocessor.pkl and rebuild
             # the original preprocessing object.
-            preprocessor = pickle.load(file)
+            preprocessor = pickle.load(file) # nosec B301 - trusted internal model artifact
 
         with open(
             "artifacts/model.pkl",
@@ -27,7 +28,7 @@ class PredictPipeline:
 
             # Read the bytes inside model.pkl and rebuild
             # the selected trained model.
-            model = pickle.load(file)
+            model = pickle.load(file) # nosec B301 - trusted internal model artifact
 
         return (
             preprocessor,

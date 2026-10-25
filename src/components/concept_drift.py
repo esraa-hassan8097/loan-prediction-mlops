@@ -34,12 +34,12 @@ It tells us:
 
 import os
 import sys
+from typing import ClassVar
 
 import pandas as pd
 
 from src.exception import CustomException
 from src.logger import logging
-
 
 # ==========================================================
 # Configuration
@@ -67,7 +67,7 @@ class ConceptDriftConfig:
     drift_threshold = 20
 
     # Features we want to investigate.
-    monitored_features = [
+    monitored_features: ClassVar[list[str]] = [
         "Credit_History",
         "Education",
         "Self_Employed",
@@ -428,7 +428,7 @@ class ConceptDrift:
             return report
 
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
 
             logging.error(
                 "Concept Drift detection failed."

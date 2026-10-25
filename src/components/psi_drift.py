@@ -43,7 +43,6 @@ import pandas as pd
 from src.exception import CustomException
 from src.logger import logging
 
-
 # ==========================================================
 # Configuration
 # ==========================================================
@@ -600,7 +599,7 @@ class PSIDrift:
             return psi_report
 
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
 
             logging.error(
                 "PSI Drift detection failed."
