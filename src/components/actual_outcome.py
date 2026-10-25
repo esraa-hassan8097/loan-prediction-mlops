@@ -33,7 +33,6 @@ import pandas as pd
 from src.exception import CustomException
 from src.logger import logging
 
-
 # ==========================================================
 # Configuration
 # ==========================================================
@@ -170,7 +169,7 @@ class ActualOutcome:
             return production_df
 
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
 
             logging.error(
                 "Error occurred while adding "

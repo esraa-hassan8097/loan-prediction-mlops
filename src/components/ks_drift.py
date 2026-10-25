@@ -33,12 +33,10 @@ import os
 import sys
 
 import pandas as pd
-
 from scipy.stats import ks_2samp
 
 from src.exception import CustomException
 from src.logger import logging
-
 
 # ==========================================================
 # Configuration
@@ -248,7 +246,7 @@ class KSDiff:
             return ks_report
 
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
 
             logging.error(
                 "KS Drift detection failed."

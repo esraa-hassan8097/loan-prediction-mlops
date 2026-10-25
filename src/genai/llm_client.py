@@ -1,4 +1,3 @@
-import os
 
 from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential

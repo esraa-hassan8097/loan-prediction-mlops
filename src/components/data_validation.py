@@ -1,8 +1,8 @@
-import os  # use it to build file paths
 import json
+import os  # use it to build file paths
+from dataclasses import dataclass
 
 import pandas as pd  # We'll use it to read: artifacts/train.csv
-from dataclasses import dataclass
 
 
 @dataclass

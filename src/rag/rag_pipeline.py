@@ -1,5 +1,5 @@
-from src.rag.retriever import retrieve_policy
 from src.genai.llm_client import LLMClient
+from src.rag.retriever import retrieve_policy
 
 
 def answer_question(question: str) -> str:

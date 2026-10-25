@@ -1,36 +1,22 @@
 import json
-
-from typing import Any, Optional, TypedDict
-
-
-
-from langgraph.checkpoint.memory import MemorySaver
-
-from langgraph.graph import END, START, StateGraph
-
-from langgraph.types import Command, interrupt
+from typing import Any, TypedDict
 
 from langfuse.langchain import CallbackHandler
-
-
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, START, StateGraph
+from langgraph.types import Command, interrupt
 
 from src.agent.rag_tool import search_loan_policy
-
 from src.agent.shap_tool import explain_loan
-
 from src.agent.tools import predict_loan
-
 from src.genai.llm_client import LLMClient
-
-
-
 
 
 class LoanState(TypedDict, total=False):
 
     user_message: str
 
-    applicant: Optional[dict]
+    applicant: dict | None
 
     route: str
 
@@ -300,7 +286,7 @@ def human_signature_node(state: LoanState):
 
     if not isinstance(human_signature, dict):
 
-        raise ValueError(
+        raise TypeError(
 
             "Invalid signature response."
 

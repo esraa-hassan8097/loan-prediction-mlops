@@ -1,7 +1,7 @@
 import os
 
-from dotenv import load_dotenv
 from azure.monitor.opentelemetry import configure_azure_monitor
+from dotenv import load_dotenv
 from opentelemetry import trace
 
 load_dotenv()

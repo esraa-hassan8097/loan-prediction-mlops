@@ -5,9 +5,9 @@ from dataclasses import dataclass
 
 import mlflow
 import mlflow.sklearn
+from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.tree import DecisionTreeClassifier
-from sklearn.ensemble import RandomForestClassifier
 
 from src.logger import logging
 from src.utils.model_utils import evaluate_model
@@ -374,8 +374,7 @@ class ModelTrainer:
 
 if __name__ == "__main__":
 
-    from src.components.data_transformation \
-        import DataTransformation
+    from src.components.data_transformation import DataTransformation
 
     transformation = DataTransformation()
 

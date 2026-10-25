@@ -47,17 +47,10 @@ import sys
 from dataclasses import dataclass
 
 import pandas as pd
-
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score
-)
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
 
 from src.exception import CustomException
 from src.logger import logging
-
 
 # ==========================================================
 # Configuration
@@ -387,7 +380,7 @@ class PerformanceMonitor:
             return performance_report
 
 
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001
 
             logging.error(
                 "Performance Monitoring failed."

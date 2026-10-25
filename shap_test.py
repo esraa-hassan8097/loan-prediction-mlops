@@ -1,9 +1,9 @@
 import pickle
-import shap
+
 import pandas as pd
+import shap
 
 from src.pipeline.prediction_pipeline import CustomData
-
 
 # 1. Load the trained preprocessing object and model
 with open("artifacts/preprocessor.pkl", "rb") as file:

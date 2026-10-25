@@ -2,8 +2,7 @@ from azure.ai.projects import AIProjectClient
 from azure.identity import DefaultAzureCredential
 from azure.search.documents import SearchClient
 
-from src.rag.document_loader import load_documents, chunk_text
-
+from src.rag.document_loader import chunk_text, load_documents
 
 # -----------------------------
 # 1. Connect to Microsoft Foundry

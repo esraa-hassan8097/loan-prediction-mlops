@@ -1,5 +1,5 @@
-import os
 import json
+import os
 import struct
 import subprocess
 from dataclasses import dataclass

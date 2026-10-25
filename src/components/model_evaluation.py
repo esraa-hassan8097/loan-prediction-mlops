@@ -1,21 +1,16 @@
 import os
 import pickle
+import sys
 from dataclasses import dataclass
 
-from sklearn.linear_model import LogisticRegression
-from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
-
-from sklearn.metrics import (
-    accuracy_score,
-    precision_score,
-    recall_score,
-    f1_score
-)
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.tree import DecisionTreeClassifier
 
 from src.components.data_ingestion import DataIngestion
-from src.components.data_validation import DataValidation
 from src.components.data_transformation import DataTransformation
+from src.components.data_validation import DataValidation
 
 
 @dataclass
@@ -176,7 +171,7 @@ if __name__ == "__main__":
 
         print("Data Validation Failed!")
 
-        exit()
+        sys.exit()
 
     transformation = DataTransformation()
 

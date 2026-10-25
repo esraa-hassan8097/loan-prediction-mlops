@@ -1,9 +1,9 @@
 import json
 
-from src.genai.llm_client import LLMClient
-from src.agent.tools import predict_loan
-from src.agent.shap_tool import explain_loan
 from src.agent.rag_tool import search_loan_policy
+from src.agent.shap_tool import explain_loan
+from src.agent.tools import predict_loan
+from src.genai.llm_client import LLMClient
 from src.monitoring.tracing import configure_monitoring, tracer
 
 
