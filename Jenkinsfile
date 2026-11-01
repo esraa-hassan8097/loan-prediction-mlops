@@ -23,26 +23,24 @@ pipeline {
     stages {
         stage('Show Release') {
             steps {
-                echo "Image: ${DOCKER_IMAGE}:${params.IMAGE_TAG}"
+                echo "Image: ${env.DOCKER_IMAGE}:${params.IMAGE_TAG}"
                 echo "Strategy: ${params.DEPLOYMENT_STRATEGY}"
             }
         }
 
         stage('Pull Image') {
             steps {
-                sh '''
-                    docker pull ${DOCKER_IMAGE}:${IMAGE_TAG}
-                '''
+                sh "docker pull ${env.DOCKER_IMAGE}:${params.IMAGE_TAG}"
             }
         }
 
         stage('Load Image Into kind') {
             steps {
-                sh '''
+                sh """
                     kind load docker-image \
-                      ${DOCKER_IMAGE}:${IMAGE_TAG} \
-                      --name ${KIND_CLUSTER}
-                '''
+                    ${env.DOCKER_IMAGE}:${params.IMAGE_TAG} \
+                    --name ${env.KIND_CLUSTER}
+                """
             }
         }
 
@@ -50,11 +48,11 @@ pipeline {
             steps {
                 script {
                     if (params.DEPLOYMENT_STRATEGY == 'rolling') {
-                        sh '''
+                        sh """
                             kubectl set image \
-                              deployment/loan-app \
-                              loan-app=${DOCKER_IMAGE}:${IMAGE_TAG}
-                        '''
+                            deployment/loan-app \
+                            loan-app=${env.DOCKER_IMAGE}:${params.IMAGE_TAG}
+                        """
                     } else if (params.DEPLOYMENT_STRATEGY == 'blue-green') {
                         echo 'Blue/Green automation will be added next.'
                     } else if (params.DEPLOYMENT_STRATEGY == 'canary') {
@@ -73,15 +71,9 @@ pipeline {
 
             steps {
                 sh '''
-                    kubectl rollout status \
-                      deployment/loan-app \
-                      --timeout=120s
-
+                    kubectl rollout status deployment/loan-app --timeout=120s
                     kubectl get deployment loan-app
-
-                    kubectl get pods \
-                      -l app=loan-app \
-                      -o wide
+                    kubectl get pods -l app=loan-app -o wide
                 '''
             }
         }
