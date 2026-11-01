@@ -53,3 +53,4 @@ logs/
 # Backup files
 *.backup
 *.save
+jenkins-kube/
