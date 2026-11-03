@@ -1,4 +1,3 @@
-groovy
 pipeline {
     agent any
 
@@ -49,7 +48,6 @@ pipeline {
                     fi
 
                     echo "Monitoring artifacts prepared."
-
                     ls -l artifacts/
                 '''
             }
