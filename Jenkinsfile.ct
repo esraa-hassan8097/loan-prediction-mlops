@@ -1,0 +1,62 @@
+pipeline {
+    agent any
+
+    triggers {
+        cron('H/30 * * * *')
+    }
+
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 30, unit: 'MINUTES')
+    }
+
+    environment {
+        MLFLOW_TRACKING_URI = 'http://host.docker.internal:5001'
+        PYTHONUNBUFFERED = '1'
+    }
+
+    stages {
+        stage('Show CT Trigger') {
+            steps {
+                echo '========================================'
+                echo '     CONTINUOUS TRAINING MONITOR'
+                echo '========================================'
+                echo 'Checking production drift...'
+            }
+        }
+
+        stage('Environment Check') {
+            steps {
+                sh '''
+                    python3 --version
+                    pwd
+                '''
+            }
+        }
+
+        stage('Check Drift') {
+            steps {
+                sh '''
+                    python3 -m src.monitoring.ct_trigger
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'CT monitoring check completed successfully.'
+        }
+
+        failure {
+            echo 'CT monitoring check failed.'
+        }
+
+        always {
+            archiveArtifacts(
+                artifacts: 'artifacts/drift_report.csv,artifacts/last_ct_drift_hash.txt',
+                allowEmptyArchive: true
+            )
+        }
+    }
+}

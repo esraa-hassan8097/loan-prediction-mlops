@@ -10,6 +10,8 @@ Data Validation
 Data Transformation
       ↓
 Model Training
+      ↓
+MLflow Candidate Registration
 """
 
 from src.components.data_ingestion import DataIngestion
@@ -19,14 +21,11 @@ from src.components.model_trainer import ModelTrainer
 
 
 class TrainingPipeline:
-
     def run_pipeline(self):
-
         print("\n")
         print("========================================")
         print("        ML TRAINING PIPELINE")
         print("========================================")
-
 
         # ==================================================
         # STEP 1 — DATA INGESTION
@@ -43,7 +42,6 @@ class TrainingPipeline:
         print("Training data:", train_path)
         print("Testing data :", test_path)
 
-
         # ==================================================
         # STEP 2 — DATA VALIDATION
         # ==================================================
@@ -55,19 +53,16 @@ class TrainingPipeline:
         validation_status = (
             data_validation.initiate_data_validation(
                 train_path,
-                test_path
+                test_path,
             )
         )
 
         print(
             "Validation status:",
-            validation_status
+            validation_status,
         )
 
-        # STOP THE PIPELINE IF VALIDATION FAILS
-
         if not validation_status:
-
             raise ValueError(
                 "Data validation failed. "
                 "Training pipeline stopped."
@@ -75,27 +70,32 @@ class TrainingPipeline:
 
         print("Data validation passed.")
 
-
         # ==================================================
         # STEP 3 — DATA TRANSFORMATION
         # ==================================================
 
-        print("\n[3/4] Starting Data Transformation...")
+        print(
+            "\n[3/4] Starting Data Transformation..."
+        )
 
         data_transformation = DataTransformation()
 
-        train_array, test_array, preprocessor_path = (
-            data_transformation.initiate_data_transformation(
+        (
+            train_array,
+            test_array,
+            preprocessor_path,
+        ) = (
+            data_transformation
+            .initiate_data_transformation(
                 train_path,
-                test_path
+                test_path,
             )
         )
 
         print(
             "Preprocessor saved at:",
-            preprocessor_path
+            preprocessor_path,
         )
-
 
         # ==================================================
         # STEP 4 — MODEL TRAINING
@@ -105,13 +105,12 @@ class TrainingPipeline:
 
         model_trainer = ModelTrainer()
 
-        metrics, model_path = (
+        candidate = (
             model_trainer.initiate_model_trainer(
                 train_array,
-                test_array
+                test_array,
             )
         )
-
 
         # ==================================================
         # FINAL RESULT
@@ -123,39 +122,48 @@ class TrainingPipeline:
         print("========================================")
 
         print(
-            f"Accuracy   : {metrics['accuracy']:.4f}"
+            f"Model      : "
+            f"{candidate['model_name']}"
         )
 
         print(
-            f"Precision  : {metrics['precision']:.4f}"
+            f"Accuracy   : "
+            f"{candidate['accuracy']:.4f}"
         )
 
         print(
-            f"Recall     : {metrics['recall']:.4f}"
+            f"Precision  : "
+            f"{candidate['precision']:.4f}"
         )
 
         print(
-            f"F1 Score   : {metrics['f1']:.4f}"
+            f"Recall     : "
+            f"{candidate['recall']:.4f}"
         )
 
         print(
-            f"Model saved at: {model_path}"
+            f"F1 Score   : "
+            f"{candidate['f1']:.4f}"
         )
 
         print(
-            f"Preprocessor saved at: "
+            f"MLflow Run : "
+            f"{candidate['run_id']}"
+        )
+
+        print(
+            f"Candidate Version: "
+            f"{candidate['version']}"
+        )
+
+        print(
+            f"Preprocessor: "
             f"{preprocessor_path}"
         )
 
-        return metrics, model_path
+        return candidate
 
-
-# ==========================================================
-# Local Testing
-# ==========================================================
 
 if __name__ == "__main__":
-
     pipeline = TrainingPipeline()
-
     pipeline.run_pipeline()
