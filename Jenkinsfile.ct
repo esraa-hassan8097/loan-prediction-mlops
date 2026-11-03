@@ -1,3 +1,4 @@
+groovy
 pipeline {
     agent any
 
@@ -34,10 +35,45 @@ pipeline {
             }
         }
 
-        stage('Check Drift') {
+        stage('Prepare Monitoring Artifacts') {
+            steps {
+                sh '''
+                    mkdir -p artifacts
+
+                    cp /shared-artifacts/drift_report.csv \
+                       artifacts/drift_report.csv
+
+                    if [ -f /shared-artifacts/last_ct_drift_hash.txt ]; then
+                        cp /shared-artifacts/last_ct_drift_hash.txt \
+                           artifacts/last_ct_drift_hash.txt
+                    fi
+
+                    echo "Monitoring artifacts prepared."
+
+                    ls -l artifacts/
+                '''
+            }
+        }
+
+        stage('Check Drift and Trigger CT') {
             steps {
                 sh '''
                     python3 -m src.monitoring.ct_trigger
+                '''
+            }
+        }
+
+        stage('Persist CT State') {
+            steps {
+                sh '''
+                    if [ -f artifacts/last_ct_drift_hash.txt ]; then
+                        cp artifacts/last_ct_drift_hash.txt \
+                           /shared-artifacts/last_ct_drift_hash.txt
+
+                        echo "CT drift state persisted."
+                    else
+                        echo "No CT state file created."
+                    fi
                 '''
             }
         }
@@ -45,11 +81,16 @@ pipeline {
 
     post {
         success {
+            echo '========================================'
             echo 'CT monitoring check completed successfully.'
+            echo '========================================'
         }
 
         failure {
+            echo '========================================'
             echo 'CT monitoring check failed.'
+            echo 'Check Jenkins Console Output.'
+            echo '========================================'
         }
 
         always {
